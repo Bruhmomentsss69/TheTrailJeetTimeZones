@@ -1,238 +1,631 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>The Ohio Diddlers Trail Jeet Time Zones</title>
-    <link rel="icon" type="image/x-icon" href="/channels4_profile.ico">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Doods Timezones</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #6366f1;
-            --secondary: #8b5cf6;
-            --accent: #f43f5e;
-            --text: #e2e8f0;
-            --text-secondary: #94a3b8;
-            --bg: #0f172a;
-            --card-bg: rgba(15, 23, 42, 0.7);
-            --glass: rgba(255, 255, 255, 0.05);
-            --border: rgba(255, 255, 255, 0.1);
-            --shadow: rgba(0, 0, 0, 0.2);
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem;
-            background-image: radial-gradient(at 80% 0%, hsla(189, 100%, 56%, 0.15) 0px, transparent 50%),
-                              radial-gradient(at 0% 50%, hsla(355, 100%, 93%, 0.1) 0px, transparent 50%);
-            display: flex; flex-direction: column; align-items: center; overflow-x: hidden; position: relative;
-        }
-        header { text-align: center; margin-bottom: 3rem; max-width: 1200px; width: 100%; }
-        h1 { font-size: 3rem; font-weight: 800; background: linear-gradient(45deg, var(--accent), var(--secondary));
-            -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 0.5rem; letter-spacing: -0.05em; }
-        .subtitle { font-size: 1.1rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; max-width: 1200px; width: 100%; }
-        .timezone-card { background: var(--card-bg); backdrop-filter: blur(12px); border-radius: 1.2rem; padding: 1.75rem; border: 1px solid var(--border); box-shadow: 0 8px 32px var(--shadow); transition: all 0.3s ease; cursor: pointer; overflow: hidden; position: relative; }
-        .timezone-card:hover { transform: translateY(-5px); border-color: rgba(255, 255, 255, 0.2); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3); }
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
-        .location { font-weight: 700; font-size: 1.3rem; color: white; }
-        .flags { font-size: 2.2rem; margin-left: 0.5rem; }
-        .people { color: var(--text-secondary); margin-bottom: 1.5rem; font-weight: 500; font-size: 1rem; }
-        .time-display { display: flex; align-items: center; gap: 1.5rem; }
-        .clock { width: 90px; height: 90px; position: relative; }
-        .clock-face { width: 100%; height: 100%; border-radius: 50%; background: rgba(255,255,255,0.02); border: 2px solid var(--border); }
-        .hand { position: absolute; left: 50%; bottom: 50%; transform-origin: 50% 100%; border-radius: 4px; }
-        .hour-hand { width: 5px; height: 25px; background: white; transform: translateX(-50%) rotate(0deg); }
-        .minute-hand { width: 4px; height: 35px; background: var(--primary); transform: translateX(-50%) rotate(0deg); }
-        .second-hand { width: 2px; height: 40px; background: var(--accent); transform: translateX(-50%) rotate(0deg); }
-        .digital-time { font-size: 2.2rem; font-weight: 700; }
-        .date { color: var(--text-secondary); font-size: 1rem; margin-top: 0.5rem; }
-        .details { max-height: 0; opacity: 0; overflow: hidden; transition: all 0.4s ease; margin-top: 1rem; font-size: 0.95rem; color: #cbd5e1; border-top: 1px solid var(--border); padding-top: 1rem; }
-        .timezone-card.active .details { max-height: 500px; opacity: 1; }
-        .details p { margin-bottom: 0.75rem; display: flex; align-items: center; gap: 1rem; }
-        .details a { color: var(--primary); text-decoration: none; font-weight: 500; }
-        .details a:hover { color: var(--secondary); }
-        .click-hint { position: absolute; bottom: 12px; left: 18px; font-size: 0.85rem; color: rgba(255,255,255,0.4); }
-        .timezone-card.active .click-hint { opacity: 0; }
-        .falling-text { position: fixed; top: -50px; font-size: 1rem; color: rgba(255,255,255,0.15); pointer-events: none; animation: fall linear forwards; white-space: nowrap; z-index: -1; }
-        @keyframes fallLeft { 0% { opacity: 1; transform: translateY(0) translateX(0) rotate(0deg); } 100% { transform: translateY(110vh) translateX(-100px) rotate(720deg); opacity: 0; } }
-        @keyframes fallRight { 0% { opacity: 1; transform: translateY(0) translateX(0) rotate(0deg); } 100% { transform: translateY(110vh) translateX(100px) rotate(-720deg); opacity: 0; } }
-        @keyframes fallStraight { 0% { opacity: 1; transform: translateY(0) rotate(0deg); } 100% { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
-        @keyframes fallZigZag { 0% { opacity: 1; transform: translateY(0) translateX(0) rotate(0deg); } 25% { transform: translateY(25vh) translateX(50px) rotate(180deg); } 50% { transform: translateY(50vh) translateX(-30px) rotate(360deg); } 75% { transform: translateY(75vh) translateX(40px) rotate(540deg); } 100% { transform: translateY(110vh) translateX(-20px) rotate(720deg); opacity: 0; } }
+        body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
-<body>
-<header>
-    <h1>The Ohio Diddlers Trail Jeet Time Zones</h1>
-    <p class="subtitle">Stay connected across the globe with real-time clocks, weather, and local news for your Trail Jeet' locations.</p>
-</header>
-<div class="grid">
-    <div class="timezone-card" data-timezone="America/New_York" data-group="east">
-        <div class="card-header"><span class="location">Eastern Time</span><span class="flags">🇺🇸</span></div>
-        <div class="people">Aaron, Lest, Sheamus, Sam, Danny</div>
-        <div class="time-display">
-            <div class="clock"><div class="clock-face"><div class="hand hour-hand"></div><div class="hand minute-hand"></div><div class="hand second-hand"></div></div></div>
-        <div><div class="digital-time"></div><div class="date"></div></div></div>
-        <div class="details"></div>
-        <div class="click-hint">Click to see weather & news</div>
-    </div>
-    <div class="timezone-card" data-timezone="Asia/Riyadh" data-group="arabian">
-        <div class="card-header"><span class="location">Arab / Cyprus Time</span><span class="flags">🇸🇦🇨🇾</span></div>
-        <div class="people">Yousef, Arethon Philip</div>
-        <div class="time-display">
-            <div class="clock"><div class="clock-face"><div class="hand hour-hand"></div><div class="hand minute-hand"></div><div class="hand second-hand"></div></div></div>
-            <div><div class="digital-time"></div><div class="date"></div></div>
-        </div>
-        <div class="details"></div>
-        <div class="click-hint">Click to see weather & news</div>
-    </div>
-    <div class="timezone-card" data-timezone="Europe/London" data-group="uk">
-        <div class="card-header"><span class="location">UK Time</span><span class="flags">🇬🇧</span></div>
-        <div class="people">Jackson</div>
-        <div class="time-display">
-            <div class="clock"><div class="clock-face"><div class="hand hour-hand"></div><div class="hand minute-hand"></div><div class="hand second-hand"></div></div></div>
-            <div><div class="digital-time"></div><div class="date"></div></div>
-        </div>
-        <div class="details"></div>
-        <div class="click-hint">Click to see weather & news</div>
-    </div>
-    <div class="timezone-card" data-timezone="America/Los_Angeles" data-group="pacific">
-        <div class="card-header"><span class="location">Pacific Time</span><span class="flags">🇺🇸</span></div>
-        <div class="people">Ben</div>
-        <div class="time-display">
-            <div class="clock"><div class="clock-face"><div class="hand hour-hand"></div><div class="hand minute-hand"></div><div class="hand second-hand"></div></div></div>
-            <div><div class="digital-time"></div><div class="date"></div></div>
-        </div>
-        <div class="details"></div>
-        <div class="click-hint">Click to see weather & news</div>
-    </div>
-    <div class="timezone-card" data-timezone="Europe/Berlin" data-group="central">
-        <div class="card-header"><span class="location">Central European</span><span class="flags">🇩🇪</span></div>
-        <div class="people">Shep</div>
-        <div class="time-display">
-            <div class="clock"><div class="clock-face"><div class="hand hour-hand"></div><div class="hand minute-hand"></div><div class="hand second-hand"></div></div></div>
-            <div><div class="digital-time"></div><div class="date"></div></div>
-        </div>
-        <div class="details"></div>
-        <div class="click-hint">Click to see weather & news</div>
-    </div>
-    <div class="timezone-card" data-timezone="Australia/Brisbane" data-group="australia">
-        <div class="card-header"><span class="location">Australian Time</span><span class="flags">🇦🇺</span></div>
-        <div class="people">Ayman</div>
-        <div class="time-display">
-            <div class="clock"><div class="clock-face"><div class="hand hour-hand"></div><div class="hand minute-hand"></div><div class="hand second-hand"></div></div></div>
-            <div><div class="digital-time"></div><div class="date"></div></div>
-        </div>
-        <div class="details"></div>
-        <div class="click-hint">Click to see weather & news</div>
-    </div>
-</div>
-<script>
-function updateClocks() {
-    document.querySelectorAll('.timezone-card').forEach(card => {
-        const tz = card.dataset.timezone;
-        const now = new Date();
-        const options = { timeZone: tz };
-        const timeStr = now.toLocaleTimeString('en-US', { ...options, hour12: true, hour: 'numeric', minute: '2-digit', second: '2-digit' });
-        const dateStr = now.toLocaleDateString('en-US', { ...options, weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        card.querySelector('.digital-time').textContent = timeStr;
-        card.querySelector('.date').textContent = dateStr;
-        const parts = now.toLocaleTimeString('en-US', { ...options, hour12: false }).split(':');
-        const hours = parseInt(parts[0]);
-        const minutes = parseInt(parts[1]);
-        const seconds = parseInt(parts[2]);
-        const hourAngle = (360/12)*(hours%12) + (360/12)*(minutes/60);
-        const minuteAngle = (360/60)*minutes + (360/60)*(seconds/60);
-        const secondAngle = (360/60)*seconds;
-        card.querySelector('.hour-hand').style.transform = `translateX(-50%) rotate(${hourAngle}deg)`;
-        card.querySelector('.minute-hand').style.transform = `translateX(-50%) rotate(${minuteAngle}deg)`;
-        card.querySelector('.second-hand').style.transform = `translateX(-50%) rotate(${secondAngle}deg)`;
-    });
-    requestAnimationFrame(updateClocks);
-}
-updateClocks();
+<body class="bg-slate-950 text-slate-100 min-h-screen">
 
-const cityData = {
-    east: [
-        { name: "Rome, NY", lat: 43.2128, lon: -75.4557 }, 
-        { name: "Brooklyn, NY", lat: 40.6782, lon: -73.9442 }, 
-        { name: "Simpsonville, SC", lat: 34.7371, lon: -82.2543 },
-        { name: "Petoskey, MI", lat: 45.3733, lon: -84.9553 }
-    ],
-    arabian: [{ name: "Jeddah, SA", lat: 21.4858, lon: 39.1925 }, { name: "Deryneia, CY", lat: 35.0583, lon: 33.9603 }],
-    uk: [{ name: "Bangor, NI", lat: 54.6539, lon: -5.6724 }],
-    pacific: [{ name: "Wenatchee, WA", lat: 47.4235, lon: -120.3103 }],
-    central: [{ name: "Berlin, DE", lat: 52.52, lon: 13.405 }],
-    australia: [{ name: "Sunshine Coast, AU", lat: -26.65, lon: 153.0667 }]
-};
+    <!-- Top Navigation / Header -->
+    <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-50 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight text-white">The Doods Timezones</h1>
+                    <p class="text-xs text-slate-400" id="user-tz-display">Detecting your timezone...</p>
+                </div>
+            </div>
 
-async function fetchTemperature(lat, lon) {
-    try {
-        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-        const data = await res.json();
-        return data.current_weather ? data.current_weather.temperature : null;
-    } catch { return null; }
-}
+            <!-- Controls: Music, Chat Copy -->
+            <div class="flex items-center gap-2">
+                <!-- Background Audio Element -->
+                <audio id="bg-audio" loop preload="auto" src="DPSITE.wav"></audio>
 
-async function updateDetails() {
-    const weatherLinks = {
-        "Simpsonville, SC": "https://www.accuweather.com/en/us/simpsonville/29681/weather-forecast/340593?type=place&placename=simpsonville%20sc&postalcode=29680",
-        "Rome, NY": "https://www.accuweather.com/en/us/rome/13440/weather-forecast/334623?city=rome",
-        "Brooklyn, NY": "https://www.accuweather.com/en/us/brooklyn/11210/weather-forecast/334651?city=brooklyn",
-        "Berlin, DE": "https://www.accuweather.com/en/de/berlin/10178/weather-forecast/178087?city=berlin",
-        "Sunshine Coast, AU": "https://www.accuweather.com/en/au/kuluin/1-3492210_1_al/weather-forecast/1-3492210_1_al?city=sunshine%20coast",
-        "Wenatchee, WA": "https://www.accuweather.com/en/us/wenatchee/98801/weather-forecast/336354",
-        "Jeddah, SA": "https://www.accuweather.com/en/sa/jeddah/299429/weather-forecast/299429?city=jeddah",
-        "Bangor, NI": "https://www.accuweather.com/en/gb/bangor/bt20-4/weather-forecast/325027",
-        "Deryneia, CY": "https://www.accuweather.com/en/cy/dherinia/122486/weather-forecast/122486?type=locality",
-        "Petoskey, MI": "https://www.accuweather.com/en/us/petoskey/49770/weather-forecast/333661"
-    };
-    for (const card of document.querySelectorAll('.timezone-card')) {
-        const group = card.dataset.group;
-        const cities = cityData[group];
-        if (!cities) continue;
-        const details = card.querySelector('.details');
-        let html = '';
-        for (const city of cities) {
-            const tempC = await fetchTemperature(city.lat, city.lon);
-            const tempF = tempC !== null ? (tempC * 9/5 + 32).toFixed(1) : 'N/A';
-            const tempDisplay = tempC !== null ? `${tempC.toFixed(1)}°C / ${tempF}°F` : 'N/A';
-            const newsUrl = `https://news.google.com/search?q=${encodeURIComponent(city.name + ' news')}`;
-            const liveUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(city.name + ' live news')}`;
-            const weatherUrl = weatherLinks[city.name];
-            html += `<p>${city.name}: ${tempDisplay} <a href="${newsUrl}" target="_blank">Local News</a> <a href="${liveUrl}" target="_blank">Live News</a> <a href="${weatherUrl}" target="_blank">Weather</a></p>`;
+                <!-- Audio Toggle Button -->
+                <button id="music-btn" onclick="toggleMusic()" title="Play / Pause DPSITE" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition border border-slate-700">
+                    <svg id="music-icon" class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+                    </svg>
+                    <span id="music-label">Music: Off</span>
+                </button>
+
+                <!-- Copy Discord Summary -->
+                <button onclick="copyDiscordSummary()" title="Copy summary for chat" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition border border-slate-700">
+                    <svg class="w-4 h-4 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                    </svg>
+                    <span>Copy Chat Times</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="space-y-6 pb-12">
+        <!-- Summary Bar: Who's Awake -->
+        <div class="max-w-7xl mx-auto px-4 pt-6">
+            <div class="flex items-center justify-between bg-slate-900/60 border border-slate-800 px-4 py-3 rounded-2xl">
+                <div class="flex items-center gap-2.5">
+                    <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span id="awake-counter" class="text-xs sm:text-sm font-medium text-slate-200">Loading awake status...</span>
+                </div>
+                <div class="text-xs text-slate-400">
+                    ✨ The Doods across the globe
+                </div>
+            </div>
+        </div>
+
+        <!-- Meeting Planner / Time Simulator Section -->
+        <section class="max-w-7xl mx-auto px-4">
+            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 shadow-lg">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-2">
+                    <div>
+                        <h2 class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                            Meeting Planner / Time Simulator
+                        </h2>
+                        <p class="text-xs text-slate-400">Drag slider to preview times across all timezones simultaneously.</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span id="slider-time-label" class="text-xs font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2.5 py-1 rounded-lg">Live Time</span>
+                        <button onclick="resetSlider()" class="text-xs text-slate-400 hover:text-white underline">Reset to Live</button>
+                    </div>
+                </div>
+                <input id="time-slider" type="range" min="0" max="1439" value="0" oninput="onSliderChange(this.value)" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500 disabled:opacity-50" disabled>
+                <div class="flex justify-between text-[10px] text-slate-500 mt-1 font-mono">
+                    <span>12:00 AM</span><span>6:00 AM</span><span>12:00 PM</span><span>6:00 PM</span><span>11:59 PM</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Grid of Timezone Cards -->
+        <main class="max-w-7xl mx-auto px-4">
+            <div id="timezone-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                <!-- Cards will be injected dynamically via JS -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-900 py-6 text-center text-xs text-slate-500">
+        <p>The Doods Timezones &bull; Built for the crew</p>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        const timezoneData = [
+            {
+                id: 'eastern',
+                name: 'Eastern Time (ET)',
+                iana: 'America/New_York',
+                country: 'United States',
+                flagSvg: '🇺🇸',
+                friends: [
+                    { name: 'Aaron', location: 'Rome, NY', lat: 43.2128, lon: -75.4557 },
+                    { name: 'Lest', location: 'Brooklyn, NY', lat: 40.6782, lon: -73.9442 },
+                    { name: 'Sam & Danny', location: 'Petoskey, MI', lat: 45.3753, lon: -84.9553 }
+                ]
+            },
+            {
+                id: 'central',
+                name: 'Central Time (CT)',
+                iana: 'America/Chicago',
+                country: 'United States',
+                flagSvg: '🇺🇸',
+                friends: [
+                    { name: 'Jacob', location: 'Eucha, OK', lat: 36.4251, lon: -94.7956 }
+                ]
+            },
+            {
+                id: 'pacific',
+                name: 'Pacific Time (PT)',
+                iana: 'America/Los_Angeles',
+                country: 'United States',
+                flagSvg: '🇺🇸',
+                friends: [
+                    { name: 'Ben', location: 'Wenatchee, WA', lat: 47.4235, lon: -120.3103 }
+                ]
+            },
+            {
+                id: 'uk',
+                name: 'UK Time (GMT/BST)',
+                iana: 'Europe/London',
+                country: 'United Kingdom',
+                flagSvg: '🇬🇧',
+                friends: [
+                    { name: 'Jackson & Mason', location: 'Bangor, NI', lat: 54.6625, lon: -5.6692 }
+                ]
+            },
+            {
+                id: 'cyprus',
+                name: 'Cyprus Time (EET/EEST)',
+                iana: 'Asia/Nicosia',
+                country: 'Cyprus',
+                flagSvg: '🇨🇾',
+                friends: [
+                    { name: 'Arethon', location: 'Deryneia, CY', lat: 35.0433, lon: 33.9514 }
+                ]
+            },
+            {
+                id: 'cet',
+                name: 'Central European Time',
+                iana: 'Europe/Berlin',
+                country: 'Germany',
+                flagSvg: '🇩🇪',
+                friends: [
+                    { name: 'Luke', location: 'Frankfurt, Germany', lat: 50.1109, lon: 8.6821 }
+                ]
+            },
+            {
+                id: 'arab',
+                name: 'Arabia Standard Time',
+                iana: 'Asia/Riyadh',
+                country: 'Saudi Arabia',
+                flagSvg: '🇸🇦',
+                friends: [
+                    { name: 'Yousef', location: 'Jeddah, SA', lat: 21.4858, lon: 39.1925 }
+                ]
+            },
+            {
+                id: 'australia',
+                name: 'Australian Eastern Time',
+                iana: 'Australia/Sydney',
+                country: 'Australia',
+                flagSvg: '🇦🇺',
+                friends: [
+                    { name: 'Ayman', location: 'Wollert, VIC', lat: -37.5683, lon: 145.0294 }
+                ]
+            }
+        ];
+
+        let userTimezone = '';
+        let isSimulating = false;
+        let simulationMinutes = 0;
+
+        // Custom DPSITE Audio Player with Fade-In & Auto-Start at 1% Volume
+        let targetVolume = 0.01; // Locked at 1%
+        let fadeInterval = null;
+
+        function toggleMusic() {
+            const audio = document.getElementById('bg-audio');
+            const btn = document.getElementById('music-btn');
+            const label = document.getElementById('music-label');
+
+            if (audio.paused) {
+                audio.volume = 0;
+                audio.play().then(() => {
+                    label.innerText = 'Music: On';
+                    btn.classList.add('text-emerald-400');
+                    fadeInAudio(audio, targetVolume, 1500);
+                }).catch(err => {
+                    console.error("Playback failed:", err);
+                });
+            } else {
+                audio.pause();
+                label.innerText = 'Music: Off';
+                btn.classList.remove('text-emerald-400');
+                if (fadeInterval) clearInterval(fadeInterval);
+            }
         }
-        details.innerHTML = html;
-    }
-}
-updateDetails();
 
-document.querySelectorAll('.timezone-card').forEach(card => {
-    card.addEventListener('click', () => card.classList.toggle('active'));
-});
+        function fadeInAudio(audio, targetVol, durationMs) {
+            if (fadeInterval) clearInterval(fadeInterval);
+            const steps = 30;
+            const stepTime = durationMs / steps;
+            const stepVol = targetVol / steps;
+            let currentVol = 0;
 
-const fallWords = ["Your Blocked","Your Blocked","Your Blocked","Your Blocked","Trail Jeet","Aaron","Lest","Sheamus","Yousef","Arethon Philip","Jackson","Ben","Shep","Ayman","Sam","Danny"];
-const fallAnimations = ["fallLeft", "fallRight", "fallStraight", "fallZigZag"];
-let fallingCount = 0, maxFalling = 30;
+            fadeInterval = setInterval(() => {
+                currentVol += stepVol;
+                if (currentVol >= targetVol) {
+                    audio.volume = targetVol;
+                    clearInterval(fadeInterval);
+                } else {
+                    audio.volume = currentVol;
+                }
+            }, stepTime);
+        }
 
-function createFallingText() {
-    if(fallingCount >= maxFalling){ setTimeout(createFallingText,500); return; }
-    const span = document.createElement('span'); 
-    span.classList.add('falling-text'); 
-    span.textContent = fallWords[Math.floor(Math.random()*fallWords.length)];
-    const left = Math.random()*100; 
-    const duration = 8 + Math.random() * 7;
-    span.style.left = `${left}vw`;
-    span.style.animation = `${fallAnimations[Math.floor(Math.random()*fallAnimations.length)]} ${duration}s linear forwards`;
-    document.body.appendChild(span);
-    fallingCount++;
-    setTimeout(() => {
-        span.remove();
-        fallingCount--;
-    }, duration * 1000);
-}
+        function enterSite() {
+            const modal = document.getElementById('welcome-modal');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 500);
 
-setInterval(createFallingText, 300);
-</script>
+            const audio = document.getElementById('bg-audio');
+            const btn = document.getElementById('music-btn');
+            const label = document.getElementById('music-label');
+
+            audio.volume = 0;
+            audio.play().then(() => {
+                label.innerText = 'Music: On';
+                btn.classList.add('text-emerald-400');
+                fadeInAudio(audio, 0.01, 2000);
+            }).catch(err => {
+                console.error("Audio playback error:", err);
+            });
+        }
+
+        function init() {
+            try {
+                userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                document.getElementById('user-tz-display').innerText = `Your detected timezone: ${userTimezone}`;
+            } catch (e) {
+                userTimezone = 'UTC';
+                document.getElementById('user-tz-display').innerText = `Your timezone: UTC`;
+            }
+
+            renderCards();
+            updateClocks();
+            fetchAllTownWeather();
+            setInterval(updateClocks, 1000);
+        }
+
+        function getTimeDifference(targetIana) {
+            try {
+                const now = new Date();
+                const userTz = userTimezone || 'UTC';
+                
+                const getOffsetMinutes = (date, iana) => {
+                    const utcTime = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }));
+                    const tzTime = new Date(date.toLocaleString('en-US', { timeZone: iana }));
+                    return (tzTime - utcTime) / (60 * 1000);
+                };
+                
+                const userOffset = getOffsetMinutes(now, userTz);
+                const targetOffset = getOffsetMinutes(now, targetIana);
+                
+                const diffMinutes = targetOffset - userOffset;
+                const diffHours = diffMinutes / 60;
+                
+                if (diffHours === 0) return 'Same time as you';
+                
+                const absHours = Math.abs(diffHours);
+                const hoursInt = Math.floor(absHours);
+                const minutesRem = Math.round((absHours - hoursInt) * 60);
+                
+                let timeStr = '';
+                if (hoursInt > 0 && minutesRem > 0) {
+                    timeStr = `${hoursInt}h ${minutesRem}m`;
+                } else if (hoursInt > 0) {
+                    timeStr = `${hoursInt} hr${hoursInt > 1 ? 's' : ''}`;
+                } else {
+                    timeStr = `${minutesRem} mins`;
+                }
+                
+                if (diffHours > 0) return `+${timeStr} ahead of you`;
+                return `${timeStr} behind you`;
+            } catch (e) {
+                return '';
+            }
+        }
+
+        function renderCards() {
+            const grid = document.getElementById('timezone-grid');
+            grid.innerHTML = '';
+
+            timezoneData.forEach(tz => {
+                const isMyTz = isUserInTimezone(tz.iana);
+                const timeDiffText = getTimeDifference(tz.iana);
+                
+                const card = document.createElement('div');
+                card.id = `card-${tz.id}`;
+                card.className = `relative overflow-hidden bg-slate-900/90 border ${isMyTz ? 'border-emerald-500 ring-2 ring-emerald-500/20' : 'border-slate-800'} rounded-2xl p-5 shadow-xl hover:border-slate-700 transition cursor-pointer group`;
+                card.onclick = (e) => {
+                    if(e.target.closest('button')) return;
+                    toggleCardExpand(tz.id);
+                };
+
+                card.innerHTML = `
+                    <div id="flag-${tz.id}" class="absolute right-3 top-3 text-5xl opacity-20 transition-opacity duration-300 pointer-events-none select-none">${tz.flagSvg}</div>
+
+                    <div class="flex items-start justify-between mb-2 relative z-10">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h3 class="font-bold text-white text-base">${tz.name}</h3>
+                                ${isMyTz ? '<span class="bg-emerald-500 text-slate-950 text-[10px] font-bold px-2 py-0.5 rounded-full">My Timezone</span>' : ''}
+                            </div>
+                            <p class="text-xs text-slate-400">${tz.country}</p>
+                        </div>
+                    </div>
+
+                    <!-- Time Difference Badge -->
+                    <div class="mb-3 relative z-10">
+                        <span class="inline-block text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-md">
+                            ${timeDiffText}
+                        </span>
+                    </div>
+
+                    <div class="flex items-center justify-between my-3 relative z-10">
+                        <div class="w-20 h-20 relative">
+                            <svg class="w-full h-full" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="46" fill="#1e293b" stroke="#334155" stroke-width="4"/>
+                                <line x1="50" y1="8" x2="50" y2="14" stroke="#64748b" stroke-width="3" stroke-linecap="round"/>
+                                <line x1="50" y1="86" x2="50" y2="92" stroke="#64748b" stroke-width="3" stroke-linecap="round"/>
+                                <line x1="8" y1="50" x2="14" y2="50" stroke="#64748b" stroke-width="3" stroke-linecap="round"/>
+                                <line x1="86" y1="50" x2="92" y2="50" stroke="#64748b" stroke-width="3" stroke-linecap="round"/>
+                                <line id="hour-${tz.id}" x1="50" y1="50" x2="50" y2="28" stroke="#f8fafc" stroke-width="4" stroke-linecap="round"/>
+                                <line id="min-${tz.id}" x1="50" y1="50" x2="50" y2="20" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+                                <line id="sec-${tz.id}" x1="50" y1="50" x2="50" y2="16" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round"/>
+                                <circle cx="50" cy="50" r="3" fill="#22c55e"/>
+                            </svg>
+                        </div>
+
+                        <div class="text-right">
+                            <div id="dig-time-${tz.id}" class="text-2xl font-mono font-extrabold text-white tracking-tight">--:--:--</div>
+                            <div id="dig-ampm-${tz.id}" class="text-xs font-semibold text-emerald-400">---</div>
+                            <div id="dig-date-${tz.id}" class="text-[11px] text-slate-400 mt-0.5">---</div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-800/80 pt-3 mt-3 relative z-10">
+                        <div class="flex items-center justify-between text-xs">
+                            <div id="status-${tz.id}" class="flex items-center gap-1.5 font-medium">
+                                <span class="w-2 h-2 rounded-full bg-slate-500"></span>
+                                <span class="text-slate-300">Checking status...</span>
+                            </div>
+                            <button class="text-xs text-emerald-400 hover:underline flex items-center gap-1 font-medium">
+                                <span id="toggle-text-${tz.id}">View Friends (${tz.friends.length})</span>
+                                <svg class="w-3.5 h-3.5 transform transition-transform duration-200" id="chevron-${tz.id}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                        </div>
+
+                        <div id="friends-${tz.id}" class="hidden mt-3 space-y-2 pt-2 border-t border-slate-800/50">
+                            ${tz.friends.map((f, fIdx) => `
+                                <div class="bg-slate-800/50 rounded-lg p-2 text-xs flex items-center justify-between">
+                                    <span class="font-medium text-slate-200">${f.name}</span>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-slate-400 font-mono">${f.location}</span>
+                                        <span id="town-temp-${tz.id}-${fIdx}" class="text-[10px] bg-sky-500/10 text-sky-300 border border-sky-500/20 px-1.5 py-0.5 rounded font-mono">...</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        async function fetchAllTownWeather() {
+            for (let tz of timezoneData) {
+                for (let i = 0; i < tz.friends.length; i++) {
+                    const f = tz.friends[i];
+                    try {
+                        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${f.lat}&longitude=${f.lon}&current=temperature_2m,weather_code`);
+                        const data = await res.json();
+                        if (data && data.current) {
+                            const tempC = Math.round(data.current.temperature_2m);
+                            const tempF = Math.round((tempC * 9/5) + 32);
+                            const code = data.current.weather_code;
+                            const icon = getWeatherIcon(code);
+                            const el = document.getElementById(`town-temp-${tz.id}-${i}`);
+                            if (el) {
+                                el.innerText = `${icon} ${tempF}°F (${tempC}°C)`;
+                            }
+                        }
+                    } catch (e) {
+                        const el = document.getElementById(`town-temp-${tz.id}-${i}`);
+                        if (el) el.innerText = 'N/A';
+                    }
+                }
+            }
+        }
+
+        function getWeatherIcon(code) {
+            if (code === 0) return '☀️';
+            if ([1, 2, 3].includes(code)) return '⛅';
+            if ([45, 48].includes(code)) return '🌫️';
+            if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return '🌧️';
+            if ([71, 73, 75, 77, 85, 86].includes(code)) return '❄️';
+            if ([95, 96, 99].includes(code)) return '⛈️';
+            return '🌡️';
+        }
+
+        function isUserInTimezone(iana) {
+            if (!userTimezone) return false;
+            if (userTimezone === iana) return true;
+            if (userTimezone.includes('New_York') && iana.includes('New_York')) return true;
+            if (userTimezone.includes('London') && iana.includes('London')) return true;
+            if (userTimezone.includes('Berlin') && iana.includes('Berlin')) return true;
+            if (userTimezone.includes('Chicago') && iana.includes('Chicago')) return true;
+            if (userTimezone.includes('Los_Angeles') && iana.includes('Los_Angeles')) return true;
+            if (userTimezone.includes('Nicosia') && iana.includes('Nicosia')) return true;
+            if (userTimezone.includes('Riyadh') && iana.includes('Riyadh')) return true;
+            if (userTimezone.includes('Sydney') && iana.includes('Sydney')) return true;
+            return false;
+        }
+
+        function toggleCardExpand(id) {
+            const list = document.getElementById(`friends-${id}`);
+            const chevron = document.getElementById(`chevron-${id}`);
+            const text = document.getElementById(`toggle-text-${id}`);
+            const flag = document.getElementById(`flag-${id}`);
+            
+            if (list.classList.contains('hidden')) {
+                list.classList.remove('hidden');
+                chevron.classList.add('rotate-180');
+                text.innerText = 'Hide Friends';
+                if (flag) flag.classList.remove('opacity-20');
+                if (flag) flag.classList.add('opacity-50');
+            } else {
+                list.classList.add('hidden');
+                chevron.classList.remove('rotate-180');
+                text.innerText = text.innerText.replace('Hide', 'View');
+                if (flag) flag.classList.remove('opacity-50');
+                if (flag) flag.classList.add('opacity-20');
+            }
+        }
+
+        function updateClocks() {
+            let now = new Date();
+
+            if (isSimulating) {
+                const simulatedDate = new Date();
+                const hours = Math.floor(simulationMinutes / 60);
+                const mins = simulationMinutes % 60;
+                simulatedDate.setHours(hours, mins, 0);
+                now = simulatedDate;
+            }
+
+            let awakeCount = 0;
+            let totalFriends = 0;
+
+            timezoneData.forEach(tz => {
+                try {
+                    const formatter = new Intl.DateTimeFormat('en-US', { timeZone: tz.iana, hour12: false, hour: 'numeric', minute: 'numeric', second: 'numeric' });
+                    const partsFormatter = new Intl.DateTimeFormat('en-US', { timeZone: tz.iana, hour12: true, hour: 'numeric', minute: 'numeric' });
+                    const dateFormatter = new Intl.DateTimeFormat('en-US', { timeZone: tz.iana, month: 'short', day: 'numeric', weekday: 'short' });
+                    
+                    const timeParts = formatter.formatToParts(now);
+                    let h = 0, m = 0, s = 0;
+                    timeParts.forEach(p => {
+                        if (p.type === 'hour') h = parseInt(p.value, 10);
+                        if (p.type === 'minute') m = parseInt(p.value, 10);
+                        if (p.type === 'second') s = parseInt(p.value, 10);
+                    });
+
+                    const time12Str = partsFormatter.format(now);
+                    const timeSplit = time12Str.split(' ');
+                    const timeOnly = timeSplit[0];
+                    const ampmOnly = timeSplit[1] || '';
+                    const dateStr = dateFormatter.format(now);
+
+                    document.getElementById(`dig-time-${tz.id}`).innerText = timeOnly;
+                    document.getElementById(`dig-ampm-${tz.id}`).innerText = ampmOnly;
+                    document.getElementById(`dig-date-${tz.id}`).innerText = dateStr;
+
+                    const secDeg = (s / 60) * 360;
+                    const minDeg = ((m + s / 60) / 60) * 360;
+                    const hourDeg = (((h % 12) + m / 60) / 12) * 360;
+
+                    const secHand = document.getElementById(`sec-${tz.id}`);
+                    const minHand = document.getElementById(`min-${tz.id}`);
+                    const hourHand = document.getElementById(`hour-${tz.id}`);
+
+                    if (secHand) secHand.setAttribute('transform', `rotate(${secDeg} 50 50)`);
+                    if (minHand) minHand.setAttribute('transform', `rotate(${minDeg} 50 50)`);
+                    if (hourHand) hourHand.setAttribute('transform', `rotate(${hourDeg} 50 50)`);
+
+                    const statusEl = document.getElementById(`status-${tz.id}`);
+                    const isAwake = h >= 7 && h < 24;
+                    
+                    tz.friends.forEach(() => {
+                        totalFriends++;
+                        if (isAwake) awakeCount++;
+                    });
+
+                    if (statusEl) {
+                        if (isAwake) {
+                            statusEl.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span class="text-emerald-400 font-medium">Awake</span>`;
+                        } else {
+                            statusEl.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500"></span><span class="text-amber-400 font-medium">Asleep</span>`;
+                        }
+                    }
+
+                } catch (e) {}
+            });
+
+            document.getElementById('awake-counter').innerText = `${awakeCount} of ${totalFriends} friends awake right now`;
+        }
+
+        function onSliderChange(val) {
+            isSimulating = true;
+            simulationMinutes = parseInt(val, 10);
+            
+            const hours = Math.floor(simulationMinutes / 60);
+            const mins = simulationMinutes % 60;
+            const hFormatted = String(hours % 12 || 12).padStart(2, '0');
+            const mFormatted = String(mins).padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            
+            document.getElementById('slider-time-label').innerText = `Simulating: ${hFormatted}:${mFormatted} ${ampm} (Local)`;
+            document.getElementById('time-slider').removeAttribute('disabled');
+            updateClocks();
+        }
+
+        function resetSlider() {
+            isSimulating = false;
+            document.getElementById('time-slider').value = 0;
+            document.getElementById('slider-time-label').innerText = 'Live Time';
+            updateClocks();
+        }
+
+        function copyDiscordSummary() {
+            let text = "🌍 The Doods Timezones Summary:\n";
+            const now = new Date();
+            
+            timezoneData.forEach(tz => {
+                const formatter = new Intl.DateTimeFormat('en-US', { timeZone: tz.iana, hour12: true, hour: 'numeric', minute: 'numeric' });
+                const timeStr = formatter.format(now);
+                text += `• ${tz.name} (${timeStr}): `;
+                text += tz.friends.map(f => `${f.name} (${f.location})`).join(', ');
+                text += `\n`;
+            });
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Timezone summary copied to clipboard for group chat!');
+            }).catch(err => {});
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            init();
+            const slider = document.getElementById('time-slider');
+            if (slider) slider.removeAttribute('disabled');
+        });
+    </script>
+
+    <!-- Welcome Modal Overlay -->
+    <div id="welcome-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/90 backdrop-blur-sm px-4 transition-opacity duration-500">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 max-w-md w-full text-center shadow-2xl space-y-6 relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="mx-auto w-16 h-16 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl flex items-center justify-center text-emerald-400">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <div class="space-y-2">
+                <h2 class="text-2xl font-extrabold text-white tracking-tight">Welcome to The Doods Timezones</h2>
+                <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                    Track your squad across the globe in real-time. Check who's awake, view live analog/digital clocks, weather temperatures, and plan meetings effortlessly.
+                </p>
+            </div>
+            <button onclick="enterSite()" class="w-full py-3.5 px-6 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-sm transition shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2">
+                <span>Enter Site & Play Music 🎵</span>
+            </button>
+        </div>
+    </div>
 </body>
 </html>
