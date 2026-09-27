@@ -59,6 +59,11 @@
                     <span id="music-label">Music: Off</span>
                 </button>
 
+                <!-- DO NOT PRESS Button -->
+                <button onclick="openWarningModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/25 text-red-400 text-xs font-bold transition border border-red-500/30 animate-pulse">
+                    ⚠️ DO NOT PRESS
+                </button>
+
                 <!-- Copy Discord Summary -->
                 <button onclick="copyDiscordSummary()" title="Copy summary for chat" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition border border-slate-700">
                     <svg class="w-4 h-4 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -600,6 +605,39 @@
             }).catch(err => {});
         }
 
+        // Warning Modal Logic
+        function openWarningModal() {
+            const modal = document.getElementById('warning-modal-1');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+
+        function closeWarningModal() {
+            const modal1 = document.getElementById('warning-modal-1');
+            const modal2 = document.getElementById('warning-modal-2');
+            modal1.classList.add('opacity-0');
+            modal2.classList.add('opacity-0');
+            setTimeout(() => {
+                modal1.classList.add('hidden');
+                modal2.classList.add('hidden');
+            }, 300);
+        }
+
+        function nextWarning() {
+            const modal1 = document.getElementById('warning-modal-1');
+            const modal2 = document.getElementById('warning-modal-2');
+            modal1.classList.add('opacity-0');
+            setTimeout(() => {
+                modal1.classList.add('hidden');
+                modal2.classList.remove('hidden');
+                setTimeout(() => modal2.classList.remove('opacity-0'), 10);
+            }, 300);
+        }
+
+        function confirmWarning() {
+            window.location.href = "https://www.google.com/search?q=R.L.+Stine%27s+The+Haunting+Hour&client=firefox-b-1-d&hs=xZ2V&sca_esv=e6efadafc00e57ce&biw=1904&bih=986&sxsrf=APpeQns9v8mNCwgx_7sYbqkVEOKd_0ROOA%3A1790476613824&ei=RYG4as32MbmjptQPibPYuAs&uact=5&oq=R.L.+Stine%27s+The+Haunting+Hour&gs_lp=Egxnd3Mtd2l6LXNlcnAiHlIuTC4gU3RpbmUncyBUaGUgSGF1bnRpbmcgSG91cjIEECMYJzIOEAAYgAQYigUYkQIYtAcyDhAuGIAEGIoFGJECGLQHMg4QLhiABBiKBRiRAhi0BzIOEAAYgAQYigUYkQIYtAcyDhAAGIAEGIoFGJECGLQHMgUQLhiABDIFEAAYgAQyBRAAGIAEMggQABiABBi0B0jVGFC7A1i1FXAHeAGQAQCYAYIBoAG_A6oBAzAuNLgBA8gBAPgBAvgBAZgCC6ACjwTCAg0QIxjJAhjwBRiwAxgnwgINECMY8AUYyQIYsAMYJ8ICChAAGEcY1gQYsAPCAg0QABiABBiKBRhDGLADwgIXEC4Y3AYYuAYY2gYY2AIYyAMYsAPYAQHCAggQABgWGB4YCsICCxAAGIAEGIoFGIYDwgIIEAAYgAQYogTCAgUQABjvBZgDAIgGAZAGFLoGBggBEAEYGZIHAzcuNKAHzSuyBwMwLjS4B9wDwgcHMC4xLjcuM8gHOYAIAQ&sclient=gws-wiz-serp";
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             init();
             const slider = document.getElementById('time-slider');
@@ -624,6 +662,49 @@
             </div>
             <button onclick="enterSite()" class="w-full py-3.5 px-6 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-sm transition shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2">
                 <span>Enter Site & Play Music 🎵</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Warning Modal Overlay 1 -->
+    <div id="warning-modal-1" class="fixed inset-0 z-[101] flex items-center justify-center bg-slate-950/90 backdrop-blur-sm px-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-slate-900 border border-red-500/40 rounded-3xl p-8 max-w-md w-full text-center shadow-2xl space-y-6 relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 w-32 h-32 bg-red-500/10 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="mx-auto w-16 h-16 bg-red-500/10 border border-red-500/30 rounded-2xl flex items-center justify-center text-red-500 text-2xl">
+                ⚠️
+            </div>
+            <div class="space-y-2">
+                <h2 class="text-2xl font-extrabold text-white tracking-tight">Are you sure?</h2>
+                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
+                    This link is <span class="text-red-400 font-bold">really disturbing</span>. Do you still want to proceed?
+                </p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="closeWarningModal()" class="flex-1 py-3 px-5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs transition">
+                    No, take me back
+                </button>
+                <button onclick="nextWarning()" class="flex-1 py-3 px-5 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs transition shadow-lg shadow-red-600/25">
+                    Yes, I'm sure
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Warning Modal Overlay 2 -->
+    <div id="warning-modal-2" class="fixed inset-0 z-[101] flex items-center justify-center bg-slate-950/90 backdrop-blur-sm px-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-slate-900 border border-red-500/40 rounded-3xl p-8 max-w-md w-full text-center shadow-2xl space-y-6 relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 w-32 h-32 bg-red-500/10 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="mx-auto w-16 h-16 bg-red-500/10 border border-red-500/30 rounded-2xl flex items-center justify-center text-red-500 text-2xl">
+                ⚠️
+            </div>
+            <div class="space-y-2">
+                <h2 class="text-2xl font-extrabold text-white tracking-tight">Warning</h2>
+                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
+                    Some say it's <span class="text-red-400 font-bold">surprisingly disturbing</span>.
+                </p>
+            </div>
+            <button onclick="confirmWarning()" class="w-full py-3.5 px-6 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs transition shadow-lg shadow-red-600/25">
+                Proceed
             </button>
         </div>
     </div>
